@@ -336,8 +336,194 @@ void Parser::parse_while_stmt(){
   }
 }
 
+void Parser::parse_switch_stmt(){
+  t = input.GetToken();
+  if(t.token_type == SWITCH)
+  {
+    t1 = input.GetToken();
+    if(t1.token_type == LPAREN)
+    {
+      parse_expr();
 
+      t2 = input.GetToken();
+      t3 = input.GetToken();
+      if(t2.token_type == RPAREN && t3.token_type == LBRACE)
+      {
+        parse_case_list();
 
+        t4 = input.GetToken();
+        if(t4.token_type == RBRACE)
+        {
+          // parsed successfully
+        }
+        else
+        {
+          syntax_error();
+          return;
+        }
+      }
+      else
+      {
+        syntax_error();
+        return;
+      }
+    }
+    else
+    {
+      syntax_error();
+      return;
+    }
+  }
+  else
+  {
+    syntax_error();
+    return;
+  }
+}
+
+void Parser::parse_expr(){
+  t = input.GetToken();
+  if(t.token_type == ID ||
+     t.token_type == NUM ||
+     t.token_type == REALNUM ||
+     t.token_type == TRUE ||
+     t.token_type == FALSE)
+  {
+    input.UngetToken(t);
+    parse_primary();
+  }
+  else if(t.token_type == PLUS ||
+          t.token_type == MINUS ||
+          t.token_type == MULT ||
+          t.token_type == DIV ||
+          t.token_type == GREATER ||
+          t.token_type == GTEQ ||
+          t.token_type == LESS ||
+          t.token_type == LTEQ ||
+          t.token_type == EQUAL ||
+          t.token_type == NOTEQUAL)
+  {
+    input.UngetToken(t);
+    parse_binary_operator();
+    parse_expr();
+    parse_expr();
+  }
+  else if(t.token_type == NOT)
+  {
+    input.UngetToken(t);
+    parse_unary_operator();
+    parse_expr();
+  }
+  else
+  {
+    syntax_error();
+    return;
+  }
+}
+
+void Parser::parse_primary(){
+  t = input.GetToken();
+  if(t.token_type == ID ||
+     t.token_type == NUM ||
+     t.token_type == REALNUM ||
+     t.token_type == TRUE ||
+     t.token_type == FALSE)
+  {
+    //parsed successfully
+  }
+  else
+  {
+    syntax_error();
+  }
+}
+
+void Parser::parse_binary_operator(){
+  t = input.GetToken();
+  if(t.token_type == PLUS ||
+     t.token_type == MINUS ||
+     t.token_type == MULT ||
+     t.token_type == DIV ||
+     t.token_type == GREATER ||
+     t.token_type == GTEQ ||
+     t.token_type == LESS ||
+     t.token_type == LTEQ ||
+     t.token_type == EQUAL ||
+     t.token_type == NOTEQUAL)
+  {
+    // parsed successfully
+  }
+  else
+  {
+    syntax_error();
+  }
+}
+
+void Parser::parse_unary_operator(){
+  t = input.GetToken();
+  if(t.token_type == NOT)
+  {
+    // parsed successfully
+  }
+  else
+  {
+    syntax_error();
+    return;
+  }
+}
+
+void Parser::parse_case_list(){
+  t = input.GetToken();
+  if(t.token_type == CASE)
+  {
+    input.UngetToken(t);
+    parse_case();
+
+    t = input.GetToken();
+    if(t.token_type == CASE)
+    {
+      input.UngetToken(t);
+      parse_case_list();
+    }
+  }
+  else
+  {
+    syntax_error();
+    return;
+  }
+}
+
+void Parser::parse_case(){
+  t = input.GetToken();
+  if(t.token_type == CASE)
+  {
+    t1 = input.GetToken();
+    if(t1.token_type == NUM)
+    {
+      // take t1.lexeme and store
+
+      t2 = input.GetToken();
+      if(t2.token_type == COLON)
+      {
+        parse_body();
+      }
+      else
+      {
+        syntax_error();
+        return;
+      }
+    }
+    else
+    {
+      syntax_error();
+      return;
+    }
+  }
+  else
+  {
+    syntax_error();
+    return;
+  }
+}
 
 
 
