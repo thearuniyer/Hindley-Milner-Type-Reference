@@ -15,16 +15,17 @@
 using namespace std;
 
 string reserved[] = { "END_OF_FILE",
-    "IF", "WHILE", "DO", "THEN", "PRINT",
-    "PLUS", "MINUS", "DIV", "MULT",
+    "IF", "WHILE", "SWITCH", "CASE",
+    "INT", "REAL", "BOOL", "TRUE", "FALSE",
+    "PLUS", "MINUS", "DIV", "MULT", "NOT",
     "EQUAL", "COLON", "COMMA", "SEMICOLON",
-    "LBRAC", "RBRAC", "LPAREN", "RPAREN",
+    "LBRACE", "RBRACE", "LPAREN", "RPAREN",
     "NOTEQUAL", "GREATER", "LESS", "LTEQ", "GTEQ",
-    "DOT", "NUM", "ID", "ERROR" // TODO: Add labels for new token types here (as string)
+    "NUM", "ID", "ERROR", "REALNUM", "PUBLIC", "PRIVATE" // TODO: Add labels for new token types here (as string)
 };
 
-#define KEYWORDS_COUNT 5
-string keyword[] = { "IF", "WHILE", "DO", "THEN", "PRINT" };
+#define KEYWORDS_COUNT 11
+string keyword[] = { "int", "real", "bool", "true", "false", "if", "while", "switch", "case", "public", "private" };
 
 void Token::Print()
 {

@@ -7,6 +7,21 @@
 #include "inputbuf.h"
 #include "lexer.h"
 
+struct sTableEntry
+{
+  string name;
+  int line_no;
+  int type;
+  int printed;
+};
+
+struct sTable
+{
+  sTableEntry* item;
+  sTable *prev;
+  sTable *next;
+};
+
 class Parser{
   void parse_program();
   void parse_global_vars();

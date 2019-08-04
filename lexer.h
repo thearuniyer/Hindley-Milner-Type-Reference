@@ -14,12 +14,13 @@
 // ------- token types -------------------
 
 typedef enum { END_OF_FILE = 0,
-    IF, WHILE, DO, THEN, PRINT,
-    PLUS, MINUS, DIV, MULT,
+    IF, WHILE, SWITCH, CASE,
+    INT, REAL, BOOL, TRUE, FALSE,
+    PLUS, MINUS, DIV, MULT, NOT,
     EQUAL, COLON, COMMA, SEMICOLON,
-    LBRAC, RBRAC, LPAREN, RPAREN,
+    LBRACE, RBRACE, LPAREN, RPAREN,
     NOTEQUAL, GREATER, LESS, LTEQ, GTEQ,
-    DOT, NUM, ID, ERROR // TODO: Add labels for new token types here
+    NUM, ID, ERROR, REALNUM, PUBLIC, PRIVATE // TODO: Add labels for new token types here
 } TokenType;
 
 class Token {
