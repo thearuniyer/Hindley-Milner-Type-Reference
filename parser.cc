@@ -3,7 +3,8 @@
 #include <vector>
 #include <string>
 #include <cctype>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <string.h>
 #include <algorithm>
 
@@ -13,6 +14,8 @@
 
 using namespace std;
 
+LexicalAnalyzer input;
+int enumCount = 4;
 Token t;
 
 void syntax_error(){
@@ -103,6 +106,48 @@ int Parser::searchList(std::string n){
   }
 }
 
+bool isExpr(int e)
+{
+  if(e != 15 && e != 16 && e != 17 && e != 18 && e != 19 && e != 20 && e != 21 && e != 22 && e != 23 && e != 26){
+      return true;
+  }
+  else{
+      return false;
+  }
+}
+
+void compareLine(int line_no, int token_type){
+  sTable* temp = symbolTable;
+  while(temp->next != NULL)
+  {
+    if(temp->item->lineNo == line_no)
+    {
+      temp->item->type = token_type;
+    }
+    temp = temp->next;
+  }
+  if(temp->item->lineNo == line_no)
+  {
+    temp->item->type = token_type;
+  }
+}
+
+void updateTypes(int currentType, int newType){
+  sTable* temp = symbolTable;
+
+  while(temp->next != NULL)
+  {
+    if(temp->item->type == currentType)
+    {
+      temp->item->type = newType;
+    }
+    temp = temp->next;
+  }
+  if(temp->item->type == currentType)
+  {
+    temp->item->type = newType;
+  }
+}
 
 // Parser Functions Begins
 void Parser::parse_program(){
