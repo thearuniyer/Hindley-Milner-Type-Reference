@@ -3,8 +3,7 @@
 #include <vector>
 #include <string>
 #include <cctype>
-#include <cstdio>
-#include <cstdlib>
+#include <stdlib.h>
 #include <string.h>
 #include <algorithm>
 
@@ -14,9 +13,19 @@
 
 using namespace std;
 
+// #define KEYWORDS_COUNT 11
+string keywords[] = { "int", "real", "bool", "true", "false", "if", "while", "switch", "case", "public", "private" };
+
 LexicalAnalyzer input;
+Parser p;
 int enumCount = 4;
-Token t;
+Token t, t1, t2, t3, t4;
+
+sTable* symbolTable;
+char* lResolve;
+char* rResolve;
+int line = 0;
+std::string output = "";
 
 void syntax_error(){
   std::cout << "Syntax Error" << '\n';
@@ -25,11 +34,11 @@ void syntax_error(){
 
 // Basic Functions
 
-void Parser::addList(std::string name, int line, int type){
+void addList(std::string name, int line, int type){
   if(symbolTable == NULL)
   {
     sTable* newEntry = new sTable;
-    sTableEntry* newItem = new sTableEntry();
+    sTableEntry* newItem = new sTableEntry;
 
     // Add item to the node
     newItem->name = name;
@@ -68,7 +77,7 @@ void Parser::addList(std::string name, int line, int type){
   }
 }
 
-int Parser::searchList(std::string n){
+int searchList(std::string n){
   sTable* temp = symbolTable;
   bool found = false;
   if(symbolTable == NULL)
@@ -101,7 +110,7 @@ int Parser::searchList(std::string n){
     {
       addList(n, t.line_no, enumCount);
       enumCount++;
-      return(enumCount-1)
+      return(enumCount-1);
     }
   }
 }
@@ -139,8 +148,40 @@ void printList(){
     }
     else if(temp->item->type < 4 && temp->item->printed == 0)
     {
-      string
+      string lCase = keywords[(temp->item->type)-1];
+      int temp1 = temp->item->type;
+      output = temp->item->name + ": " + lCase + " #";
+      std::cout << output << '\n';
+      output = "";
+      temp->item->printed = 1;
+
+      while (temp->next != NULL && temp->next->item->type == temp1)
+      {
+          temp = temp->next;
+          string lCase2 = keywords[(temp->item->type)-1];
+          output = temp->item->name + ": " + lCase2 + " #";
+          cout << output <<endl;
+          temp->item->printed = 1;
+          output = "";
+      }
     }
+    else
+    {
+      temp = temp->next;
+    }
+  }
+  if(temp->item->type <= 3 && temp->item->printed == 0)
+  {
+      string lCase3 = keywords[(temp->item->type)-1];
+      output += temp->item->name + ": " + lCase3 + " #";
+      cout << output <<endl;
+      output = "";
+  }
+  else if (temp->item->type > 3 && temp->item->printed == 0)
+  {
+      output += temp->item->name + ":" + " ? " + "#";
+      cout << output <<endl;
+      output = "";
   }
 }
 
@@ -188,28 +229,32 @@ void updateTypes(int currentType, int newType){
 }
 
 // Parser Functions Begins
-void Parser::parse_program(){
+int Parser::parse_program(){
   t = input.GetToken();
   int var;
-  if(t.token_type == ID)
+  while (t.token_type != END_OF_FILE)
   {
-    input.UngetToken(t);
-    var = parse_global_vars();
-    var = parse_body();
-  }
-  else if(t.token_type == LBRACE)
-  {
-    input.UngetToken(t);
-    var = parse_body();
-  }
-  else if(t.token_type == END_OF_FILE)
-  {
-    return 0;
-  }
-  else
-  {
-    syntax_error();
-    return 0;
+    if(t.token_type == ID)
+    {
+      input.UngetToken(t);
+      var = p.parse_global_vars();
+      var = p.parse_body();
+    }
+    else if(t.token_type == LBRACE)
+    {
+      input.UngetToken(t);
+      var = p.parse_body();
+    }
+    else if(t.token_type == END_OF_FILE)
+    {
+      return 0;
+    }
+    else
+    {
+      syntax_error();
+      return 0;
+    }
+    t = input.GetToken();
   }
 }
 
@@ -224,7 +269,7 @@ int Parser::parse_global_vars(){
   else
   {
     syntax_error();
-    return;
+
   }
   return 0;
 }
@@ -251,7 +296,7 @@ int Parser::parse_var_decl_list(){
   else
   {
     syntax_error();
-    return;
+
   }
   return 0;
 }
@@ -277,13 +322,13 @@ int Parser::parse_var_decl(){
       else
       {
         syntax_error();
-        return;
+
       }
     }
     else
     {
       syntax_error();
-      return;
+
     }
   }
   else
@@ -314,13 +359,13 @@ int Parser::parse_var_list(){
     else
     {
       syntax_error();
-      return;
+
     }
   }
   else
   {
     syntax_error();
-    return;
+
   }
   return 0;
 }
@@ -337,7 +382,7 @@ int Parser::parse_type_name(){
      else
      {
        syntax_error();
-       return;
+
      }
      return 0;
 }
@@ -358,22 +403,22 @@ int Parser::parse_body(){
     else
     {
       syntax_error();
-      return;
+
     }
   }
   else if(t.token_type == END_OF_FILE)
   {
-    lexer.UngetToken(t);
-    return;
+    input.UngetToken(t);
+
   }
   else
   {
     syntax_error();
-    return;
+
   }
 }
 
-void Parser::parse_stmt_list(){
+int Parser::parse_stmt_list(){
   t = input.GetToken();
   int var;
   if(t.token_type == ID ||
@@ -401,12 +446,12 @@ void Parser::parse_stmt_list(){
      else
      {
        syntax_error();
-       return;
+
      }
      return 0;
 }
 
-void Parser::parse_stmt(){
+int Parser::parse_stmt(){
   t = input.GetToken();
   int var;
   if(t.token_type == ID)
@@ -432,7 +477,7 @@ void Parser::parse_stmt(){
   else
   {
     syntax_error();
-    return;
+
   }
   return 0;
 }
@@ -447,7 +492,7 @@ int Parser::parse_assign_stmt(){
     if(t.token_type == EQUAL)
     {
       t = input.GetToken();
-      if(t.token_type == ID || t.token_type == NUM || t.token_type == REALNUM || t.token_type == TR || t.token_type == FA || t.token_type == PLUS || t.token_type == MINUS || t.token_type == MULT || t.token_type == DIV || t.token_type == LESS || t.token_type == GREATER || t.token_type== GTEQ || t.token_type== LTEQ || t.token_type == EQUAL || t.token_type == NOTEQUAL || t.token_type == NOT)
+      if(t.token_type == ID || t.token_type == NUM || t.token_type == REALNUM || t.token_type == TRUE || t.token_type == FALSE || t.token_type == PLUS || t.token_type == MINUS || t.token_type == MULT || t.token_type == DIV || t.token_type == LESS || t.token_type == GREATER || t.token_type== GTEQ || t.token_type== LTEQ || t.token_type == EQUAL || t.token_type == NOTEQUAL || t.token_type == NOT)
       {
         input.UngetToken(t);
         rhs = parse_expr();
@@ -462,7 +507,7 @@ int Parser::parse_assign_stmt(){
           {
             if(lhs < 3)
             {
-              cout << "TYPE MISMATCH " << token.line_no << " C1" << endl;
+              cout << "TYPE MISMATCH " << t.line_no << " C1" << endl;
               exit(1);
             }
             else
@@ -486,25 +531,25 @@ int Parser::parse_assign_stmt(){
         else
         {
           syntax_error();
-          return;
+
         }
       }
       else
       {
         syntax_error();
-        return;
+
       }
     }
     else
     {
       syntax_error();
-      return;
+
     }
   }
   else
   {
     syntax_error();
-    return;
+
   }
   return 0;
 }
@@ -520,7 +565,7 @@ int Parser::parse_if_stmt(){
       int var = parse_expr();
       if(var != 3)
       {
-        cout<< "TYPE MISMATCH " << token.line_no << " C4" << endl;
+        cout<< "TYPE MISMATCH " << t.line_no << " C4" << endl;
         exit(1);
       }
 
@@ -532,7 +577,7 @@ int Parser::parse_if_stmt(){
       else
       {
         syntax_error();
-        return;
+
       }
     }
     else
@@ -543,12 +588,12 @@ int Parser::parse_if_stmt(){
   else
   {
     syntax_error();
-    return;
+
   }
   return 0;
 }
 
-void Parser::parse_while_stmt(){
+int Parser::parse_while_stmt(){
   t = input.GetToken();
   int var;
   if(t.token_type == WHILE)
@@ -559,7 +604,7 @@ void Parser::parse_while_stmt(){
       var = parse_expr();
       if(var != 3)
       {
-        cout<< "TYPE MISMATCH " << token.line_no << " C4" << endl;
+        cout<< "TYPE MISMATCH " << t.line_no << " C4" << endl;
         exit(1);
       }
 
@@ -571,24 +616,24 @@ void Parser::parse_while_stmt(){
       else
       {
         syntax_error();
-        return;
+
       }
     }
     else
     {
       syntax_error();
-      return;
+
     }
   }
   else
   {
     syntax_error();
-    return;
+
   }
   return 0;
 }
 
-void Parser::parse_switch_stmt(){
+int Parser::parse_switch_stmt(){
   t = input.GetToken();
   int var;
   if(t.token_type == SWITCH)
@@ -599,7 +644,7 @@ void Parser::parse_switch_stmt(){
       var = parse_expr();
       if(var <= 3 && var != 1)
       {
-        cout<< "TYPE MISMATCH " << token.line_no << " C5"<<endl;
+        cout<< "TYPE MISMATCH " << t.line_no << " C5"<<endl;
         exit(1);
       }
 
@@ -617,25 +662,25 @@ void Parser::parse_switch_stmt(){
         else
         {
           syntax_error();
-          return;
+
         }
       }
       else
       {
         syntax_error();
-        return;
+
       }
     }
     else
     {
       syntax_error();
-      return;
+
     }
   }
   else
   {
     syntax_error();
-    return;
+
   }
   return 0;
 }
@@ -673,7 +718,7 @@ int Parser::parse_expr(){
     {
       if(var >= 15 && var <= 18)
       {
-        if((lExpr <= 2 && rExpr > 3) || (leftExp > 3 && rightExp > 3))
+        if((lExpr <= 2 && rExpr > 3) || (lExpr > 3 && rExpr > 3))
         {
           updateTypes(lExpr, rExpr);
           rExpr = lExpr;
@@ -724,7 +769,7 @@ int Parser::parse_expr(){
   return var;
 }
 
-void Parser::parse_primary(){
+int Parser::parse_primary(){
   t = input.GetToken();
   if(t.token_type == ID)
   {
@@ -836,7 +881,7 @@ int Parser::parse_case_list(){
   // else
   // {
   //   syntax_error();
-  //   return;
+  //
   // }
   return 0;
 }
@@ -858,19 +903,19 @@ int Parser::parse_case(){
       else
       {
         syntax_error();
-        return;
+
       }
     }
     else
     {
       syntax_error();
-      return;
+
     }
   }
   else
   {
     syntax_error();
-    return;
+
   }
 }
 
@@ -878,14 +923,17 @@ int Parser::parse_case(){
 
 int main()
 {
-    LexicalAnalyzer lexer;
-    Token token;
+    // // LexicalAnalyzer lexer;
+    // // Token token;
+    //
+    // // t = lexer.GetToken();
+    // // token.Print();
+    // while (token.token_type != END_OF_FILE)
+    // {
+    //     token = lexer.GetToken();
+    //     token.Print();
+    // }
 
-    token = lexer.GetToken();
-    token.Print();
-    while (token.token_type != END_OF_FILE)
-    {
-        token = lexer.GetToken();
-        token.Print();
-    }
+    p.parse_program();
+    printList();
 }
