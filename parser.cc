@@ -20,7 +20,7 @@ void syntax_error(){
   exit(1);
 }
 
-// List Functions
+// Basic Functions
 
 void Parser::addList(std::string name, int line, int type){
   if(symbolTable == NULL)
@@ -102,6 +102,7 @@ int Parser::searchList(std::string n){
     }
   }
 }
+
 
 // Parser Functions Begins
 void Parser::parse_program(){
@@ -247,19 +248,26 @@ void Parser::parse_type_name(){
 
 void Parser::parse_body(){
   t = input.GetToken();
+
   if(t.token_type == LBRACE)
   {
     parse_stmt_list();
-    t1 = input.GetToken();
-    if(t1.token_type == SEMICOLON)
+    t = input.GetToken();
+    if(t.token_type == RBRACE)
     {
       // parsed successfully
+      return 0;
     }
     else
     {
       syntax_error();
       return;
     }
+  }
+  else if(t.token_type == END_OF_FILE)
+  {
+    lexer.UngetToken(t);
+    return;
   }
   else
   {
@@ -473,8 +481,10 @@ void Parser::parse_switch_stmt(){
   }
 }
 
-void Parser::parse_expr(){
+int Parser::parse_expr(){
   t = input.GetToken();
+  int var;
+  // check C2 errors
   if(t.token_type == ID ||
      t.token_type == NUM ||
      t.token_type == REALNUM ||
@@ -482,7 +492,7 @@ void Parser::parse_expr(){
      t.token_type == FALSE)
   {
     input.UngetToken(t);
-    parse_primary();
+    var = parse_primary();
   }
   else if(t.token_type == PLUS ||
           t.token_type == MINUS ||
@@ -496,70 +506,152 @@ void Parser::parse_expr(){
           t.token_type == NOTEQUAL)
   {
     input.UngetToken(t);
-    parse_binary_operator();
-    parse_expr();
-    parse_expr();
+    var = parse_binary_operator();
+    int lExpr = parse_expr();
+    int rExpr = parse_expr();
+
+    if((lExpr != rExpr) || isExpr(var))
+    {
+      if(var >= 15 && var <= 18)
+      {
+        if((lExpr <= 2 && rExpr > 3) || (leftExp > 3 && rightExp > 3))
+        {
+          updateTypes(lExpr, rExpr);
+          rExpr = lExpr;
+        }
+        else if(lExpr > 3 && rExpr <= 2)
+        {
+          updateTypes(lExpr, rExpr);
+          lExpr = rExpr;
+        }
+        else
+        {
+          cout << "TYPE MISMATCH " << t.line_no << " C2"<<endl;
+          exit(1);
+        }
+      }
+      else
+      {
+        cout << "TYPE MISMATCH " << t.line_no << " C2"<<endl;
+        exit(1);
+      }
+    }
+    if(var >= 19 && var <= 26)
+    {
+      var = 3;
+    }
+    else
+    {
+      var = rExpr;
+    }
   }
   else if(t.token_type == NOT)
   {
     input.UngetToken(t);
-    parse_unary_operator();
-    parse_expr();
+    var = parse_unary_operator();
+    var = parse_expr();
+
+    if(var != 3)
+    {
+      cout << "TYPE MISMATCH " << t.line_no << " C2"<<endl;
+      exit(1);
+    }
   }
   else
   {
     syntax_error();
-    return;
+    return 0;
   }
+  return var;
 }
 
 void Parser::parse_primary(){
   t = input.GetToken();
-  if(t.token_type == ID ||
-     t.token_type == NUM ||
-     t.token_type == REALNUM ||
-     t.token_type == TRUE ||
-     t.token_type == FALSE)
+  if(t.token_type == ID)
   {
     //parsed successfully
+    return(searchList(t.lexeme));
+  }
+  else if(t.token_type == NUM)
+  {
+    return 1;
+  }
+  else if(t.token_type == REALNUM)
+  {
+    return 2;
+  }
+  else if(t.token_type == TRUE)
+  {
+    return 3;
+  }
+  else if(t.token_type == FALSE)
+  {
+    return 4;
   }
   else
   {
     syntax_error();
+    return 0;
   }
 }
 
-void Parser::parse_binary_operator(){
+int Parser::parse_binary_operator(){
   t = input.GetToken();
-  if(t.token_type == PLUS ||
-     t.token_type == MINUS ||
-     t.token_type == MULT ||
-     t.token_type == DIV ||
-     t.token_type == GREATER ||
-     t.token_type == GTEQ ||
-     t.token_type == LESS ||
-     t.token_type == LTEQ ||
-     t.token_type == EQUAL ||
-     t.token_type == NOTEQUAL)
+  if(t.token_type == PLUS)
   {
-    // parsed successfully
+    return 15;
+  }
+  else if(t.token_type == MINUS)
+  {
+    return 16;
+  }
+  else if(t.token_type == MULT)
+  {
+    return 17;
+  }
+  else if(t.token_type == DIV)
+  {
+    return 18;
+  }
+  else if(t.token_type == GREATER)
+  {
+    return 20;
+  }
+  else if(t.token_type == GTEQ)
+  {
+    return 23;
+  }
+  else if(t.token_type == LTEQ)
+  {
+    return 21;
+  }
+  else if(t.token_type == EQUAL)
+  {
+    return 26;
+  }
+  else if(t.token_type == NOTEQUAL)
+  {
+    return 22;
   }
   else
   {
     syntax_error();
+    return -1;
   }
 }
 
-void Parser::parse_unary_operator(){
+int Parser::parse_unary_operator(){
   t = input.GetToken();
+
   if(t.token_type == NOT)
   {
     // parsed successfully
+    return 1;
   }
   else
   {
     syntax_error();
-    return;
+    return 0;
   }
 }
 
