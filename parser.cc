@@ -106,6 +106,44 @@ int Parser::searchList(std::string n){
   }
 }
 
+void printList(){
+  sTable* temp = symbolTable;
+  int var;
+
+  while(temp->next != NULL)
+  {
+    if(temp->item->type > 3 && temp->item->printed == 0)
+    {
+      var = temp->item->type;
+      output += temp->item->name;
+      temp->item->printed = 1;
+
+      while(temp->next != NULL)
+      {
+        temp = temp->next;
+        if(temp->item->type == var)
+        {
+          output += ", " + temp->item->name;
+          temp->item->printed = 1;
+        }
+        else
+        {
+
+        }
+      }
+      output += ": ? #";
+      std::cout << output << '\n';
+      temp->item->printed = 1;
+      output = "";
+      temp = symbolTable;
+    }
+    else if(temp->item->type < 4 && temp->item->printed == 0)
+    {
+      string
+    }
+  }
+}
+
 bool isExpr(int e)
 {
   if(e != 15 && e != 16 && e != 17 && e != 18 && e != 19 && e != 20 && e != 21 && e != 22 && e != 23 && e != 26){
@@ -152,26 +190,32 @@ void updateTypes(int currentType, int newType){
 // Parser Functions Begins
 void Parser::parse_program(){
   t = input.GetToken();
+  int var;
   if(t.token_type == ID)
   {
     input.UngetToken(t);
-    parse_global_vars();
-    parse_body();
+    var = parse_global_vars();
+    var = parse_body();
   }
   else if(t.token_type == LBRACE)
   {
     input.UngetToken(t);
-    parse_body();
+    var = parse_body();
+  }
+  else if(t.token_type == END_OF_FILE)
+  {
+    return 0;
   }
   else
   {
     syntax_error();
-    return;
+    return 0;
   }
 }
 
-void Parser::parse_global_vars(){
+int Parser::parse_global_vars(){
   t = input.GetToken();
+
   if(t.token_type == ID)
   {
     input.UngetToken(t);
@@ -182,14 +226,16 @@ void Parser::parse_global_vars(){
     syntax_error();
     return;
   }
+  return 0;
 }
 
-void Parser::parse_var_decl_list(){
+int Parser::parse_var_decl_list(){
   t = input.GetToken();
+  int var;
   if(t.token_type == ID)
   {
     input.UngetToken(t);
-    parse_var_decl();
+    var = parse_var_decl();
 
     t = input.GetToken();
     if(t.token_type == ID)
@@ -207,19 +253,21 @@ void Parser::parse_var_decl_list(){
     syntax_error();
     return;
   }
+  return 0;
 }
 
-void Parser::parse_var_decl(){
+int Parser::parse_var_decl(){
   t = input.GetToken();
+  int var;
   if(t.token_type == ID)
   {
     input.UngetToken(t);
-    parse_var_list();
+    var = parse_var_list();
 
     t = input.GetToken();
     if(t.token_type == COLON)
     {
-      parse_type_name();
+      var = parse_type_name();
 
       t1 = input.GetToken();
       if(t1.token_type == SEMICOLON)
@@ -240,7 +288,8 @@ void Parser::parse_var_decl(){
   }
   else
   {
-    input.UngetToken(t);
+    syntax_error();
+    return 0;
   }
 }
 
@@ -276,27 +325,30 @@ int Parser::parse_var_list(){
   return 0;
 }
 
-void Parser::parse_type_name(){
+int Parser::parse_type_name(){
   t = input.GetToken();
+
   if(t.token_type == INT ||
      t.token_type == REAL ||
      t.token_type == BOOL)
      {
-       //something
+       compareLine(t.line_no, t.token_type);
      }
      else
      {
        syntax_error();
        return;
      }
+     return 0;
 }
 
-void Parser::parse_body(){
+int Parser::parse_body(){
   t = input.GetToken();
-
+  int var;
   if(t.token_type == LBRACE)
   {
-    parse_stmt_list();
+    var = parse_stmt_list();
+
     t = input.GetToken();
     if(t.token_type == RBRACE)
     {
@@ -323,13 +375,14 @@ void Parser::parse_body(){
 
 void Parser::parse_stmt_list(){
   t = input.GetToken();
+  int var;
   if(t.token_type == ID ||
      t.token_type == IF ||
      t.token_type == WHILE ||
      t.token_type == SWITCH)
      {
        input.UngetToken(t);
-       parse_stmt();
+       var = parse_stmt();
 
        t = input.GetToken();
        if(t.token_type == ID ||
@@ -338,7 +391,11 @@ void Parser::parse_stmt_list(){
           t.token_type == SWITCH)
           {
             input.UngetToken(t);
-            parse_stmt_list();
+            var = parse_stmt_list();
+          }
+          else if(t.token_type == RBRACE)
+          {
+            input.UngetToken(t);
           }
      }
      else
@@ -346,52 +403,91 @@ void Parser::parse_stmt_list(){
        syntax_error();
        return;
      }
+     return 0;
 }
 
 void Parser::parse_stmt(){
   t = input.GetToken();
-
+  int var;
   if(t.token_type == ID)
   {
     input.UngetToken(t);
-    parse_assign_stmt();
+    var = parse_assign_stmt();
   }
   else if(t.token_type == IF)
   {
     input.UngetToken(t);
-    parse_if_stmt();
+    var = parse_if_stmt();
   }
   else if(t.token_type == WHILE)
   {
     input.UngetToken(t);
-    parse_while_stmt();
+    var = parse_while_stmt();
   }
   else if(t.token_type == SWITCH)
   {
     input.UngetToken(t);
-    parse_switch_stmt();
+    var = parse_switch_stmt();
   }
   else
   {
     syntax_error();
     return;
   }
+  return 0;
 }
 
-void Parser::parse_assign_stmt(){
+int Parser::parse_assign_stmt(){
+  int lhs, rhs;
   t = input.GetToken();
   if(t.token_type == ID)
   {
-    //something
+    lhs = searchList(t.lexeme);
     t = input.GetToken();
     if(t.token_type == EQUAL)
     {
-      parse_expr();
-
       t = input.GetToken();
-      if(t.token_type == SEMICOLON)
+      if(t.token_type == ID || t.token_type == NUM || t.token_type == REALNUM || t.token_type == TR || t.token_type == FA || t.token_type == PLUS || t.token_type == MINUS || t.token_type == MULT || t.token_type == DIV || t.token_type == LESS || t.token_type == GREATER || t.token_type== GTEQ || t.token_type== LTEQ || t.token_type == EQUAL || t.token_type == NOTEQUAL || t.token_type == NOT)
       {
-        // parsed successfully
+        input.UngetToken(t);
+        rhs = parse_expr();
+
+        if(lhs == 1 || lhs == 2 || lhs == 3)
+        {
+          if(lhs == rhs)
+          {
+            // okay
+          }
+          else
+          {
+            if(lhs < 3)
+            {
+              cout << "TYPE MISMATCH " << token.line_no << " C1" << endl;
+              exit(1);
+            }
+            else
+            {
+              updateTypes(rhs, lhs);
+              rhs = lhs;
+            }
+          }
+        }
+        else
+        {
+          updateTypes(lhs, rhs);
+          lhs = rhs;
+        }
+
+        t = input.GetToken();
+        if(t.token_type == SEMICOLON)
+        {
+          // parsed successfully
+        }
+        else
+        {
+          syntax_error();
+          return;
+        }
       }
       else
       {
@@ -404,32 +500,34 @@ void Parser::parse_assign_stmt(){
       syntax_error();
       return;
     }
-    else
-    {
-      syntax_error();
-      return;
-    }
   }
   else
   {
     syntax_error();
     return;
   }
+  return 0;
 }
 
-void Parser::parse_if_stmt(){
+int Parser::parse_if_stmt(){
   t = input.GetToken();
+  int var;
   if(t.token_type == IF)
   {
     t1 = input.GetToken();
     if(t1.token_type == LPAREN)
     {
-      parse_expr();
+      int var = parse_expr();
+      if(var != 3)
+      {
+        cout<< "TYPE MISMATCH " << token.line_no << " C4" << endl;
+        exit(1);
+      }
 
       t2 = input.GetToken();
       if(t2.token_type == RPAREN)
       {
-        parse_body();
+        var = parse_body();
       }
       else
       {
@@ -447,21 +545,28 @@ void Parser::parse_if_stmt(){
     syntax_error();
     return;
   }
+  return 0;
 }
 
 void Parser::parse_while_stmt(){
   t = input.GetToken();
+  int var;
   if(t.token_type == WHILE)
   {
     t1 = input.GetToken();
     if(t1.token_type == LPAREN)
     {
-      parse_expr();
+      var = parse_expr();
+      if(var != 3)
+      {
+        cout<< "TYPE MISMATCH " << token.line_no << " C4" << endl;
+        exit(1);
+      }
 
       t2 = input.GetToken();
       if(t2.token_type == RPAREN)
       {
-        parse_body();
+        var = parse_body();
       }
       else
       {
@@ -478,23 +583,31 @@ void Parser::parse_while_stmt(){
   else
   {
     syntax_error();
+    return;
   }
+  return 0;
 }
 
 void Parser::parse_switch_stmt(){
   t = input.GetToken();
+  int var;
   if(t.token_type == SWITCH)
   {
     t1 = input.GetToken();
     if(t1.token_type == LPAREN)
     {
-      parse_expr();
+      var = parse_expr();
+      if(var <= 3 && var != 1)
+      {
+        cout<< "TYPE MISMATCH " << token.line_no << " C5"<<endl;
+        exit(1);
+      }
 
       t2 = input.GetToken();
       t3 = input.GetToken();
       if(t2.token_type == RPAREN && t3.token_type == LBRACE)
       {
-        parse_case_list();
+        var = parse_case_list();
 
         t4 = input.GetToken();
         if(t4.token_type == RBRACE)
@@ -524,6 +637,7 @@ void Parser::parse_switch_stmt(){
     syntax_error();
     return;
   }
+  return 0;
 }
 
 int Parser::parse_expr(){
@@ -700,40 +814,46 @@ int Parser::parse_unary_operator(){
   }
 }
 
-void Parser::parse_case_list(){
+int Parser::parse_case_list(){
   t = input.GetToken();
+  int var;
   if(t.token_type == CASE)
   {
     input.UngetToken(t);
-    parse_case();
+    var = parse_case();
 
     t = input.GetToken();
     if(t.token_type == CASE)
     {
       input.UngetToken(t);
-      parse_case_list();
+      var = parse_case_list();
+    }
+    else if(t.token_type == RBRACE)
+    {
+      input.UngetToken(t);
     }
   }
-  else
-  {
-    syntax_error();
-    return;
-  }
+  // else
+  // {
+  //   syntax_error();
+  //   return;
+  // }
+  return 0;
 }
 
-void Parser::parse_case(){
+int Parser::parse_case(){
   t = input.GetToken();
+  int var;
   if(t.token_type == CASE)
   {
     t1 = input.GetToken();
     if(t1.token_type == NUM)
     {
       // take t1.lexeme and store
-
       t2 = input.GetToken();
       if(t2.token_type == COLON)
       {
-        parse_body();
+        var = parse_body();
       }
       else
       {
