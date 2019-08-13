@@ -20,6 +20,90 @@ void syntax_error(){
   exit(1);
 }
 
+// List Functions
+
+void Parser::addList(std::string name, int line, int type){
+  if(symbolTable == NULL)
+  {
+    sTable* newEntry = new sTable;
+    sTableEntry* newItem = new sTableEntry();
+
+    // Add item to the node
+    newItem->name = name;
+    newItem->lineNo = t.line_no;
+    newItem->type = type;
+    newItem->printed = 0;
+
+    // Add node as newEntry
+    newEntry->item = newItem;
+    newEntry->next = NULL;
+    newEntry->prev = NULL;
+
+    symbolTable = newEntry;
+  }
+  else
+  {
+    // Retrieve old symbolTable
+    sTable* temp = symbolTable;
+    while(temp->next != NULL)
+    {
+      temp = temp->next;
+    }
+
+    sTable* newEntry = new sTable();
+    sTableEntry* newItem = new sTableEntry();
+
+    newItem->name = name;
+    newItem->lineNo = t.line_no;
+    newItem->type = type;
+    newItem->printed = 0;
+
+    newEntry->item = newItem;
+    newEntry->next = NULL;
+    newEntry->prev = temp;
+    temp->next = newEntry;
+  }
+}
+
+int Parser::searchList(std::string n){
+  sTable* temp = symbolTable;
+  bool found = false;
+  if(symbolTable == NULL)
+  {
+    addList(n, t.line_no, enumCount);
+    enumCount++;
+    return 4;
+  }
+  else
+  {
+    while(temp->next != NULL)
+    {
+      if(strcmp(temp->item->name.c_str(), n.c_str()) == 0)
+      {
+        found = true;
+        return(temp->item->type);
+      }
+      else
+      {
+        temp = temp->next;
+      }
+    }
+
+    if(strcmp(temp->item->name.c_str(), n.c_str()) == 0)
+    {
+      found = true;
+      return(temp->item->type);
+    }
+    if(!found)
+    {
+      addList(n, t.line_no, enumCount);
+      enumCount++;
+      return(enumCount-1)
+    }
+  }
+}
+
+// Parser Functions Begins
 void Parser::parse_program(){
   t = input.GetToken();
   if(t.token_type == ID)
@@ -114,21 +198,28 @@ void Parser::parse_var_decl(){
   }
 }
 
-void Parser::parse_var_list(){
+int Parser::parse_var_list(){
   t = input.GetToken();
+  int var;
+  addList(t.lexeme, t.line_no, 0);
+
   if(t.token_type == ID)
   {
     //parsed and store
     //look for more
-
-    t1 = input.GetToken();
-    if(t1.token_type == COMMA)
+    t = input.GetToken();
+    if(t.token_type == COMMA)
     {
-      parse_var_list();
+      var = parse_var_list();
+    }
+    else if(t.token_type == COLON)
+    {
+      input.UngetToken(t);
     }
     else
     {
-      UngetToken(t1);
+      syntax_error();
+      return;
     }
   }
   else
@@ -136,6 +227,7 @@ void Parser::parse_var_list(){
     syntax_error();
     return;
   }
+  return 0;
 }
 
 void Parser::parse_type_name(){

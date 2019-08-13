@@ -42,6 +42,10 @@ class Parser{
   void parse_switch_stmt();
   void parse_case_list();
   void parse_case();
+
+  void addList(std::string n, int ln, int t);
+  int searchList(std::string n);
+  void updateTypes(int lhs, int rhs);
 };
 
 #endif  //__PARSER__H__

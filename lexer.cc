@@ -184,8 +184,8 @@ Token LexicalAnalyzer::GetToken()
     tmp.line_no = line_no;
     input.GetChar(c);
     switch (c) {
-        case '.':
-            tmp.token_type = DOT;
+        case '!':
+            tmp.token_type = NOT;
             return tmp;
         case '+':
             tmp.token_type = PLUS;
@@ -211,11 +211,11 @@ Token LexicalAnalyzer::GetToken()
         case ';':
             tmp.token_type = SEMICOLON;
             return tmp;
-        case '[':
-            tmp.token_type = LBRAC;
+        case '{':
+            tmp.token_type = LBRACE;
             return tmp;
-        case ']':
-            tmp.token_type = RBRAC;
+        case '}':
+            tmp.token_type = RBRACE;
             return tmp;
         case '(':
             tmp.token_type = LPAREN;
@@ -248,13 +248,17 @@ Token LexicalAnalyzer::GetToken()
             }
             return tmp;
         default:
-            if (isdigit(c)) {
+            if (isdigit(c))
+            {
                 input.UngetChar(c);
                 return ScanNumber();
-            } else if (isalpha(c)) {
+            }
+            else if (isalpha(c))
+            {
                 input.UngetChar(c);
                 return ScanIdOrKeyword();
-            } else if (input.EndOfInput())
+            }
+            else if (input.EndOfInput())
                 tmp.token_type = END_OF_FILE;
             else
                 tmp.token_type = ERROR;
