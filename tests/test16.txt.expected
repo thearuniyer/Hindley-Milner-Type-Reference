@@ -1,0 +1,5 @@
+a: int #
+b: int #
+c, d, e, f: ? #
+w: bool #
+x, y: ? #

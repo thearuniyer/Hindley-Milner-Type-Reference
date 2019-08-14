@@ -211,7 +211,7 @@ bool LexicalAnalyzer::SkipComments()
         else
         {
             comments = false;
-            cout << "Syntax Error\n";
+            cout << "Syntax Error1\n";
             exit(0);
         }
     }
@@ -400,7 +400,7 @@ Token LexicalAnalyzer::GetToken()
     }
 
     SkipSpace();
-    SkipComments();
+    // SkipComments();
     SkipSpace();
     tmp.lexeme = "";
     tmp.line_no = line_no;
@@ -521,12 +521,12 @@ int parse_varlist(void)
         }
         else
         {
-            cout << "\n Syntax Error \n";
+            cout << "\n Syntax Error2 \n";
         }
     }
     else
     {
-        cout << "\n Syntax Error \n";
+        cout << "\n Syntax Error3 \n";
     }
     return(0);
 }
@@ -544,7 +544,7 @@ int parse_unaryOperator(void)
     }
     else
     {
-        cout << "\n Syntax Error\n";
+        cout << "\n Syntax Error4\n";
         return(0);
     }
 }
@@ -594,7 +594,7 @@ int parse_binaryOperator(void)
     }
     else
     {
-        cout << "\n Syntax Error \n";
+        cout << "\n Syntax Error5 \n";
         return(-1);
     }
 }
@@ -624,7 +624,7 @@ int parse_primary(void)
     }
     else
     {
-        cout << "\n Syntax Error \n";
+        cout << "\n Syntax Error6 \n";
         return(0);
     }
 }
@@ -731,7 +731,7 @@ int parse_expression(void)
     }
     else
     {
-        cout << "\n Syntax Error \n";
+        cout << "\n Syntax Error7 \n";
         return(0);
     }
     return tempI;
@@ -834,22 +834,22 @@ int parse_assstmt(void)
                 }
                 else
                 {
-                    cout << "\n HI Syntax Error " << token.token_type << " \n";
+                    cout << "\n HI Syntax Error8 " << token.token_type << " \n";
                 }
             }
             else
             {
-                cout << "\n Syntax Error \n";
+                cout << "\n Syntax Error9 \n";
             }
         }
         else
         {
-            cout << "\n Syntax Error \n";
+            cout << "\n Syntax Error10 \n";
         }
     }
     else
     {
-        cout << "\n Syntax Error \n";
+        cout << "\n Syntax Error11 \n";
     }
     return(0);
 }
@@ -871,17 +871,17 @@ int parse_case(void)
             }
             else
             {
-                cout << "\n Syntax Error \n";
+                cout << "\n Syntax Error12 \n";
             }
         }
         else
         {
-            cout << "\n Syntax Error \n";
+            cout << "\n Syntax Error13 \n";
         }
     }
     else
     {
-        cout << "\n Syntax Error \n";
+        cout << "\n Syntax Error14 \n";
     }
     return 0;
 }
@@ -937,27 +937,27 @@ int parse_switchstmt(void)
                     }
                     else
                     {
-                        cout << "\n Syntax Error \n";
+                        cout << "\n Syntax Error15 \n";
                     }
                 }
                 else
                 {
-                    cout << "\n Syntax Error \n";
+                    cout << "\n Syntax Error16 \n";
                 }
             }
             else
             {
-                cout << "\n Syntax Error \n";
+                cout << "\n Syntax Error17 \n";
             }
         }
         else
         {
-            cout << "\n Syntax Error \n";
+            cout << "\n Syntax Error18 \n";
         }
     }
     else
     {
-        cout << "\n Syntax Error \n";
+        cout << "\n Syntax Error19 \n";
     }
     return(0);
 }
@@ -985,17 +985,17 @@ int parse_whilestmt(void)
             }
             else
             {
-                cout << "\n Syntax Error \n";
+                cout << "\n Syntax Error20 \n";
             }
         }
         else
         {
-            cout << "\n Syntax Error \n";
+            cout << "\n Syntax Error21 \n";
         }
     }
     else
     {
-        cout << "\n Syntax Error \n";
+        cout << "\n Syntax Error21 \n";
     }
     return(0);
 }
@@ -1023,17 +1023,17 @@ int parse_ifstmt(void)
             }
             else
             {
-                cout << "\n Syntax Error \n";
+                cout << "\n Syntax Error23 \n";
             }
         }
         else
         {
-            cout << "\n Syntax Error \n";
+            cout << "\n Syntax Error24 \n";
         }
     }
     else
     {
-        cout << "\n Syntax Error \n";
+        cout << "\n Syntax Error25 \n";
     }
     return(0);
 }
@@ -1065,7 +1065,7 @@ int parse_stmt(void)
     }
     else
     {
-        cout << "\n Syntax Error \n";
+        cout << "\n Syntax Error26 \n";
     }
     return(0);
 }
@@ -1092,7 +1092,7 @@ int parse_stmtlist(void)
     }
     else
     {
-        cout << "\n Syntax Error \n";
+        cout << "\n Syntax Error27 \n";
     }
     return(0);
 }
@@ -1112,7 +1112,7 @@ int parse_body(void)
         }
         else
         {
-            cout << "\n Syntax Error\n ";
+            cout << "\n Syntax Error28\n ";
             return(0);
         }
     }
@@ -1123,7 +1123,7 @@ int parse_body(void)
     }
     else
     {
-        cout << "\n Syntax Error \n ";
+        cout << "\n Syntax Error29 \n ";
         return(0);
     }
 }
@@ -1164,17 +1164,17 @@ int parse_vardecl(void)
             }
             else
             {
-                cout << "\n Syntax Error \n";
+                cout << "\n Syntax Error30 \n";
             }
         }
         else
         {
-            cout << "\n Syntax Error \n";
+            cout << "\n Syntax Error31 \n";
         }
     }
     else
     {
-        cout << "\n Syntax Error \n";
+        cout << "\n Syntax Error32 \n";
     }
     return(0);
 }
@@ -1213,7 +1213,7 @@ int parse_globalVars(void)
     }
     else
     {
-        cout << "Syntax Error";
+        cout << "Syntax Error33";
     }
     return(0);
 }
@@ -1241,7 +1241,7 @@ int parse_program(void)
         }
         else
         {
-            cout << "\n Syntax Error\n";
+            cout << "\n Syntax Error34\n";
             return(0);
         }
         token = lexer.GetToken();
@@ -1325,9 +1325,6 @@ void printList(void)
 
     }
 }
-
-
-
 
 char null[] = "NULL";
 int main()
