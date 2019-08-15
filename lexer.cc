@@ -81,7 +81,7 @@ void addList(std::string name, int line, int type)
         sTable* temp = symbolTable;
         while(temp->next != NULL)
         {
-          if (temp->item->name == name && temp->item->type == 0)
+          if (temp->item->name == name)
           {
             temp->item->type = type;
             return;
@@ -111,9 +111,8 @@ int searchList(std::string n)
     if (symbolTable == NULL)
     {
         addList(n, token.line_no, enumCount);
-        // std::cout << "addList = "<<n<<", "<<  enumCount << '\n';
         enumCount++;
-        return (4);
+        return (enumCount-1);
     }
     else
     {
@@ -710,7 +709,7 @@ int parse_expression(void)
                 exit(1);
             }
         }
-        if(var == 19 || var == 20 || var == 21 || var == 23 || var == 26)
+        if(var == 19 || var == 20 || var == 21 || var == 23 || var == 26 || var == 22)
         {
             var = 3;
         }
@@ -791,7 +790,7 @@ int parse_assstmt(void)
             token = input.GetToken();
             if(token.token_type == ID || token.token_type == NUM || token.token_type == REALNUM || token.token_type == TRUE || token.token_type == FALSE || token.token_type == PLUS || token.token_type == MINUS || token.token_type == MULT || token.token_type == DIV || token.token_type == LESS || token.token_type == GREATER || token.token_type== GTEQ || token.token_type== LTEQ || token.token_type == EQUAL || token.token_type == NOTEQUAL || token.token_type == NOT)
             {
-                // std::cout << "token_type = "<< token.token_type << '\n';
+                // std::cout << "into assignment_stmt" << '\n';
                 input.UngetToken(token);
                 RHS = parse_expression();
                 // std::cout << "RHS ="<<RHS << '\n';
@@ -967,7 +966,13 @@ int parse_whilestmt(void)
         token = input.GetToken();
         if(token.token_type == LPAREN)
         {
+            // std::cout << "into while" << '\n';
             var = parse_expression();
+            // std::cout << "var in while ="<<var << '\n';
+            if(var == 4 || var == 5)
+            {
+              var = 3;
+            }
             if(var != 3)
             {
                 cout<< "TYPE MISMATCH " << token.line_no << " C4" << endl;
@@ -1198,7 +1203,6 @@ int parse_vardecllist(void)
     return(0);
 }
 
-string global = "::";
 int parse_globalVars(void)
 {
     token = input.GetToken();
