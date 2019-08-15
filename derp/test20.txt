@@ -1,0 +1,13 @@
+{
+	a = b;
+	if (< a b) {
+		b = / 5 4;
+	}
+	c = * - d e f;
+	while (true) {
+		e = + e c;
+	}
+	if (!false) {
+		w = + < x y > c d;
+	}
+}

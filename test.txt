@@ -1,4 +1,12 @@
-x: bool;
 {
-	x = 0;
+	a = + a b;
+	while (+ +
+			+ a b
+			c
+			d) {
+		x = + y z;
+	}
+	if (! + 1 0) {
+		w = y;
+	}
 }

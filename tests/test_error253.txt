@@ -1,0 +1,9 @@
+x: int;
+y: real;
+z: bool;
+a, b: int;
+c, d: real;
+e, f: bool;
+{
+	c = < 2 1.2;
+}

@@ -1,0 +1,11 @@
+x: int;
+y: real;
+z: bool;
+p: bool;
+{
+	switch (true) {
+		case 1: {
+			p = true;
+		}
+	}
+}

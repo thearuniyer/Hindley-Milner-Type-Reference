@@ -81,6 +81,11 @@ void addList(std::string name, int line, int type)
         sTable* temp = symbolTable;
         while(temp->next != NULL)
         {
+          if (temp->item->name == name && temp->item->type == 0)
+          {
+            temp->item->type = type;
+            return;
+          }
             temp = temp->next;
         }
 
@@ -106,6 +111,7 @@ int searchList(std::string n)
     if (symbolTable == NULL)
     {
         addList(n, token.line_no, enumCount);
+        // std::cout << "addList = "<<n<<", "<<  enumCount << '\n';
         enumCount++;
         return (4);
     }
@@ -116,6 +122,7 @@ int searchList(std::string n)
             if(strcmp(temp->item->name.c_str(), n.c_str()) == 0)
             {
                 found = true;
+                // std::cout << "while->type = "<<  temp->item->type << '\n';
                 return(temp->item->type);
             }
             else
@@ -126,6 +133,7 @@ int searchList(std::string n)
         if(strcmp(temp->item->name.c_str(), n.c_str()) == 0)
         {
             found = true;
+            // std::cout << "if->type = "<<  temp->item->type << '\n';
             return(temp->item->type);
         }
         if(!found)
@@ -649,27 +657,32 @@ int parse_expression(void)
     {
         input.UngetToken(token);
         var = parse_binaryOperator();
+        // std::cout << "var ="<< var << '\n';
         int lExpr = parse_expression();
+        // std::cout << "lExpr ="<< lExpr << '\n';
         int rExpr = parse_expression();
+        // std::cout << "rExpr ="<< rExpr << '\n';
         if((lExpr != rExpr) || isExpress(var))
         {
-
             if(var == 15 || var == 16 || var == 17 || var == 18)
             {
                 if(lExpr <= 2 && rExpr > 3)
                 {
                     updateTypes(rExpr, lExpr);
                     rExpr = lExpr;
+                    // std::cout << "updated rExpr loop1 lExpr" <<lExpr<<"rExpr="<<rExpr <<'\n';
                 }
                 else if(lExpr > 3 && rExpr <= 2)
                 {
                     updateTypes(rExpr, lExpr);
                     lExpr = rExpr;
+                    // std::cout << "updated lExpr loop2 lExpr" <<lExpr<<"rExpr="<<rExpr <<'\n';
                 }
                 else if(lExpr > 3 && rExpr > 3)
                 {
                     updateTypes(rExpr, lExpr);
                     rExpr = lExpr;
+                    // std::cout << "updated rExpr loop3 lExpr" <<lExpr<<"rExpr="<<rExpr <<'\n';
                 }
                 else
                 {
@@ -697,7 +710,7 @@ int parse_expression(void)
                 exit(1);
             }
         }
-        if(var == 19 || var == 20 || var == 21 || var == 23 || var == 26 )
+        if(var == 19 || var == 20 || var == 21 || var == 23 || var == 26)
         {
             var = 3;
         }
@@ -722,6 +735,7 @@ int parse_expression(void)
         cout << "\n Syntax Error \n";
         return(0);
     }
+    // std::cout << "var = "<<var << '\n';
     return var;
 }
 
@@ -777,11 +791,12 @@ int parse_assstmt(void)
             token = input.GetToken();
             if(token.token_type == ID || token.token_type == NUM || token.token_type == REALNUM || token.token_type == TRUE || token.token_type == FALSE || token.token_type == PLUS || token.token_type == MINUS || token.token_type == MULT || token.token_type == DIV || token.token_type == LESS || token.token_type == GREATER || token.token_type== GTEQ || token.token_type== LTEQ || token.token_type == EQUAL || token.token_type == NOTEQUAL || token.token_type == NOT)
             {
+                // std::cout << "token_type = "<< token.token_type << '\n';
                 input.UngetToken(token);
                 RHS = parse_expression();
                 // std::cout << "RHS ="<<RHS << '\n';
 
-                if(LHS == 1 || LHS == 2 || LHS == 3)
+                if(LHS <= 3)
                 {
                     if(LHS == RHS)
                     {
@@ -789,7 +804,7 @@ int parse_assstmt(void)
                     }
                     else
                     {
-                        if(LHS < 3)
+                        if(LHS <= 3)
                         {
                             cout << "TYPE MISMATCH " << token.line_no << " C1" << endl;
                             exit(1);
@@ -937,7 +952,7 @@ int parse_switchstmt(void)
     }
     else
     {
-        cout << "\n Syntax Error19 \n";
+        cout << "\n Syntax Error \n";
     }
     return(0);
 }
@@ -1112,6 +1127,7 @@ int parse_typename(void)
     token = input.GetToken();
     if(token.token_type == INT || token.token_type == REAL || token.token_type == BOOLEAN)
     {
+        // std::cout << "token_type = "<< token.token_type << '\n';
         // addList(token.lexeme, token.line_no,token.token_type);
         compareLine(token.line_no, token.token_type);
     }
@@ -1137,6 +1153,7 @@ int parse_vardecl(void)
             var = parse_typename();
 
             //addList(lexeme, token.line_no,var);
+            // std::cout << "var = " << var << '\n';
             token = input.GetToken();
             if(token.token_type == SEMICOLON)
             {

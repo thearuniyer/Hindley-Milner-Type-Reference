@@ -1,0 +1,8 @@
+x: int;
+y: real;
+z: bool;
+p: bool;
+{
+	if (<> x y) {		p = true;
+	}
+}

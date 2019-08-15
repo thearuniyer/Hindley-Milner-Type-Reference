@@ -1,0 +1,9 @@
+x: int #
+y: real #
+z: bool #
+a: int #
+b: int #
+c: real #
+d: real #
+e: bool #
+f: bool #

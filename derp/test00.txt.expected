@@ -1,0 +1,141 @@
+x: int #
+v: real #
+t: bool #
+y: int #
+w: real #
+u: bool #
+a: bool #
+p1, p2: ? #
+p3, p4: ? #
+p5, p6: ? #
+p7, p8: ? #
+p9, p10: ? #
+p11, p12: ? #
+p13, p14: ? #
+p15, p16: ? #
+p17, p18: ? #
+p19, p20: ? #
+p21, p22: ? #
+p23, p24: ? #
+p25, p26: ? #
+p27, p28: ? #
+p29, p30: ? #
+p31, p32: ? #
+p33, p34: ? #
+p35, p36: ? #
+r1, r2, r3, r4: ? #
+r5, r6, r7, r8: ? #
+r9, r10, r11, r12: ? #
+r13, r14, r15, r16: ? #
+r17, r18, r19, r20: ? #
+r21, r22, r23, r24: ? #
+r25, r26, r27, r28: ? #
+r29, r30, r31, r32: ? #
+r33, r34, r35, r36: ? #
+r37, r38, r39, r40: ? #
+r41, r42, r43, r44: ? #
+r45, r46, r47, r48: ? #
+r49, r50, r51, r52: ? #
+r53, r54, r55, r56: ? #
+r57, r58, r59, r60: ? #
+r61, r62, r63, r64: ? #
+q1, q2: ? #
+q3, q4: ? #
+q5, q6: ? #
+q7, q8: ? #
+q9, q10: ? #
+q11, q12: ? #
+q13, q14: ? #
+q15, q16: ? #
+q17, q18: ? #
+q19, q20: ? #
+q21, q22: ? #
+q23, q24: ? #
+q25, q26: ? #
+q27, q28: ? #
+q29, q30: ? #
+q31, q32: ? #
+q33, q34: ? #
+q35, q36: ? #
+s1, s2, s3, s4: ? #
+s5, s6, s7, s8: ? #
+s9, s10, s11, s12: ? #
+s13, s14, s15, s16: ? #
+s17, s18, s19, s20: ? #
+s21, s22, s23, s24: ? #
+s25, s26, s27, s28: ? #
+s29, s30, s31, s32: ? #
+s33, s34, s35, s36: ? #
+s37, s38, s39, s40: ? #
+s41, s42, s43, s44: ? #
+s45, s46, s47, s48: ? #
+s49, s50, s51, s52: ? #
+s53, s54, s55, s56: ? #
+s57, s58, s59, s60: ? #
+s61, s62, s63, s64: ? #
+b: int #
+c: real #
+x1: int #
+x2: int #
+x3: int #
+x4: int #
+x5: int #
+y1: int #
+y2: int #
+y3: int #
+y4: int #
+y5: int #
+v1: real #
+v2: real #
+v3: real #
+v4: real #
+v5: real #
+w1: real #
+w2: real #
+w3: real #
+w4: real #
+w5: real #
+x6: int #
+x7: int #
+x8: int #
+x9: int #
+x0: int #
+y6: int #
+y7: int #
+y8: int #
+y9: int #
+y0: int #
+v6: real #
+v7: real #
+v8: real #
+v9: real #
+v0: real #
+w6: real #
+w7: real #
+w8: real #
+w9: real #
+w0: real #
+j0: bool #
+i1, i2: ? #
+i3, i4: ? #
+i5, i6: ? #
+i7, i8: ? #
+i9, i10: ? #
+j1: bool #
+j2: bool #
+j3: bool #
+j4: bool #
+j5: bool #
+k1: bool #
+j6: bool #
+j7, j8: ? #
+j9, j10: ? #
+k2: bool #
+k3: bool #
+k4: bool #
+k5: bool #
+k6: bool #
+k7: bool #
+k8: bool #
+k9: bool #
+k10: bool #

@@ -1,0 +1,9 @@
+x: int;
+y: real;
+z: bool;
+p: bool;
+{
+	while (+ 0 0) {
+		p = true;
+	}
+}

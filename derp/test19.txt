@@ -1,0 +1,12 @@
+x, y: bool;
+{
+	if (!x) {
+		while (!y) {
+			switch (* a b) {
+				case 50: { if (= x y) { y = z; } }
+				case 60: { while (> g h) { x = + + < i j > k m = m n; } }
+			}
+		}
+		c = * d a;
+	}
+}
