@@ -1,0 +1,18 @@
+# Ignore all test folders
+/tests
+/derp
+
+#Ignore all text files
+*.txt
+
+#Ignore all pdf files
+*.pdf
+
+#Ignore shell files
+*.sh
+
+#Ignore all zip files
+*.zip
+
+#Ignore backup files
+*.bak
